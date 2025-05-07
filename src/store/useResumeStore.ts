@@ -63,48 +63,48 @@ interface ResumeStore {
 }
 
 // 同步简历到文件系统
-const syncResumeToFile = async (
-  resumeData: ResumeData,
-  prevResume?: ResumeData
-) => {
-  try {
-    const handle = await getFileHandle("syncDirectory");
-    if (!handle) {
-      console.warn("No directory handle found");
-      return;
-    }
+// const syncResumeToFile = async (
+//   resumeData: ResumeData,
+//   prevResume?: ResumeData
+// ) => {
+//   try {
+//     const handle = await getFileHandle("syncDirectory");
+//     if (!handle) {
+//       console.warn("No directory handle found");
+//       return;
+//     }
 
-    const hasPermission = await verifyPermission(handle);
-    if (!hasPermission) {
-      console.warn("No permission to write to directory");
-      return;
-    }
+//     const hasPermission = await verifyPermission(handle);
+//     if (!hasPermission) {
+//       console.warn("No permission to write to directory");
+//       return;
+//     }
 
-    const dirHandle = handle as FileSystemDirectoryHandle;
+//     const dirHandle = handle as FileSystemDirectoryHandle;
 
-    if (
-      prevResume &&
-      prevResume.id === resumeData.id &&
-      prevResume.title !== resumeData.title
-    ) {
-      try {
-        await dirHandle.removeEntry(`${prevResume.title}.json`);
-      } catch (error) {
-        console.warn("Error deleting old file:", error);
-      }
-    }
+//     if (
+//       prevResume &&
+//       prevResume.id === resumeData.id &&
+//       prevResume.title !== resumeData.title
+//     ) {
+//       try {
+//         await dirHandle.removeEntry(`${prevResume.title}.json`);
+//       } catch (error) {
+//         console.warn("Error deleting old file:", error);
+//       }
+//     }
 
-    const fileName = `${resumeData.title}.json`;
-    const fileHandle = await dirHandle.getFileHandle(fileName, {
-      create: true,
-    });
-    const writable = await fileHandle.createWritable();
-    await writable.write(JSON.stringify(resumeData, null, 2));
-    await writable.close();
-  } catch (error) {
-    console.error("Error syncing resume to file:", error);
-  }
-};
+//     const fileName = `${resumeData.title}.json`;
+//     const fileHandle = await dirHandle.getFileHandle(fileName, {
+//       create: true,
+//     });
+//     const writable = await fileHandle.createWritable();
+//     await writable.write(JSON.stringify(resumeData, null, 2));
+//     await writable.close();
+//   } catch (error) {
+//     console.error("Error syncing resume to file:", error);
+//   }
+// };
 
 export const useResumeStore = create(
   persist<ResumeStore>(
@@ -151,7 +151,7 @@ export const useResumeStore = create(
           activeResume: newResume,
         }));
 
-        syncResumeToFile(newResume);
+        // syncResumeToFile(newResume);
 
         return id;
       },
@@ -166,7 +166,7 @@ export const useResumeStore = create(
             ...data,
           };
 
-          syncResumeToFile(updatedResume, resume);
+          // syncResumeToFile(updatedResume, resume);
 
           return {
             resumes: {
@@ -289,7 +289,7 @@ export const useResumeStore = create(
             activeResume: updatedResume,
           };
 
-          syncResumeToFile(updatedResume, state.activeResume);
+          // syncResumeToFile(updatedResume, state.activeResume);
 
           return newState;
         });
@@ -612,7 +612,7 @@ export const useResumeStore = create(
           activeResumeId: resume.id,
         }));
 
-        syncResumeToFile(resume);
+        // syncResumeToFile(resume);
         return resume.id;
       },
     }),
